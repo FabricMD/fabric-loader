@@ -16,13 +16,15 @@
 
 package net.fabricmc.loader.game;
 
-import java.util.Collections;
+import de.kb1000.fabricmd.loader.game.MindustryGameProvider;
+
+import java.util.Arrays;
 import java.util.List;
 
 public final class GameProviders {
 	private GameProviders() { }
 
 	public static List<GameProvider> create() {
-		return Collections.singletonList(new MinecraftGameProvider());
+		return Arrays.asList(new MinecraftGameProvider(), new MindustryGameProvider());
 	}
 }
