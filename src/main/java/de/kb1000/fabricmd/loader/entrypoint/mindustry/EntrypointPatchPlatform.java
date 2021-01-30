@@ -5,15 +5,12 @@ import net.fabricmc.loader.entrypoint.EntrypointTransformer;
 import net.fabricmc.loader.launch.common.FabricLauncher;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-import org.objectweb.asm.util.Textifier;
-import org.objectweb.asm.util.TraceClassVisitor;
-
-import static org.objectweb.asm.Opcodes.*;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ListIterator;
 import java.util.function.Consumer;
+
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
 public class EntrypointPatchPlatform extends EntrypointPatch {
 	private static final String TARGET = "mindustry.core.Platform";
@@ -42,7 +39,8 @@ public class EntrypointPatchPlatform extends EntrypointPatch {
 			while (it.hasNext()) {
 				AbstractInsnNode insn = it.next();
 				if (insn instanceof MethodInsnNode) {
-					if (((MethodInsnNode) insn).owner.equals("java/lang/ClassLoader") && ((MethodInsnNode) insn).name.equals("getSystemClassLoader")) {
+					final MethodInsnNode methodInsnNode = (MethodInsnNode) insn;
+					if (methodInsnNode.owner.equals("java/lang/ClassLoader") && methodInsnNode.name.equals("getSystemClassLoader")) {
 						debug("Patching " + TARGET + " to support Java mods under Fabric");
 						patched = true;
 						it.set(new LdcInsnNode(Type.getType(TARGET_DESCRIPTOR)));
